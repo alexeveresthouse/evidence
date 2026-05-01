@@ -1,0 +1,26 @@
+data {
+  int<lower=0> n;
+  vector[n] x;
+  real<lower = 0, upper = 1> t;
+  real a;
+  real b;
+  real pmean;
+  real kappa;
+}
+
+parameters {
+  real mu;
+  real<lower = 0> sigma_sq;
+}
+
+model {
+ sigma_sq ~ inv_gamma(a, b);
+ mu ~ normal(pmean, sqrt(sigma_sq/kappa));
+  target += t * normal_lpdf(x | mu, sqrt(sigma_sq));
+}
+
+generated quantities{
+  real log_lik;
+  log_lik = normal_lpdf(x | mu, sqrt(sigma_sq));
+}
+
